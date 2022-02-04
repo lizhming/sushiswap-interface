@@ -14,7 +14,9 @@ import { computeRealizedLPFeePercent, warningSeverity } from 'app/functions/pric
 import { useCurrency } from 'app/hooks/Tokens'
 import { useV2TradeExactIn } from 'app/hooks/useV2Trades'
 import { useActiveWeb3React } from 'app/services/web3'
-import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'app/state/user/hooks'
+import { useAppSelector } from 'app/state/hooks'
+import { selectSlippage } from 'app/state/slippage/slippageSlice'
+import { useExpertModeManager } from 'app/state/user/hooks'
 import { useETHBalances } from 'app/state/wallet/hooks'
 import React, { useMemo, useState } from 'react'
 
@@ -64,10 +66,7 @@ export default function Borrow({ pair }: BorrowProps) {
 
   const displayUpdateOracle = pair.currentExchangeRate.gt(0) ? updateOracle : true
 
-  // Swap
-  // const [allowedSlippage] = useUserSlippageTolerance(); // 10 = 0.1%
-
-  const allowedSlippage = useUserSlippageToleranceWithDefault(DEFAULT_BORROW_SLIPPAGE_TOLERANCE) // custom from users
+  const allowedSlippage = useAppSelector(selectSlippage)
 
   const parsedAmount = tryParseAmount(borrowValue, assetToken)
 

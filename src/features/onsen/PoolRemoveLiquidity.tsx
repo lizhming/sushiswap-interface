@@ -20,11 +20,13 @@ import { useActiveWeb3React } from 'app/services/web3'
 import { USER_REJECTED_TX } from 'app/services/web3/WalletError'
 import { Field } from 'app/state/burn/actions'
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'app/state/burn/hooks'
+import { useAppSelector } from 'app/state/hooks'
+import { selectSlippage } from 'app/state/slippage/slippageSlice'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
-import { useUserSlippageToleranceWithDefault } from 'app/state/user/hooks'
 import React, { useCallback, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 
+// TODO: this is different
 const DEFAULT_REMOVE_LIQUIDITY_SLIPPAGE_TOLERANCE = new Percent(5, 100)
 
 // @ts-ignore TYPE NEEDS FIXING
@@ -50,7 +52,7 @@ const PoolWithdraw = ({ currencyA, currencyB, header }) => {
 
   // txn values
   const deadline = useTransactionDeadline()
-  const allowedSlippage = useUserSlippageToleranceWithDefault(DEFAULT_REMOVE_LIQUIDITY_SLIPPAGE_TOLERANCE)
+  const allowedSlippage = useAppSelector(selectSlippage)
 
   // pair contract
   const pairContract = usePairContract(pair?.liquidityToken?.address)

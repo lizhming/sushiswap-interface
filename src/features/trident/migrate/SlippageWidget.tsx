@@ -1,22 +1,17 @@
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
-import { Percent } from '@sushiswap/core-sdk'
 import QuestionHelper from 'app/components/QuestionHelper'
 import Typography from 'app/components/Typography'
-import { TRIDENT_MIGRATION_DEFAULT_SLIPPAGE } from 'app/features/trident/migrate/context/tridentMigrateAction'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance } from 'app/state/user/hooks'
+import { useAppDispatch, useAppSelector } from 'app/state/hooks'
+import { selectSlippage, setSlippageInput } from 'app/state/slippage/slippageSlice'
 import React, { useState } from 'react'
 
-// TODO: Upcoming PR to synchronize with src/components/TransactionSettings/index.tsx
-// Should make logic into redux store so it can be repurposed
 export const SlippageWidget = () => {
   const { i18n } = useLingui()
-  const userSlippageTolerance = useUserSlippageTolerance()
-  const setSlippage = useSetUserSlippageTolerance()
+  const dispatch = useAppDispatch()
+  const userSlippageTolerance = useAppSelector(selectSlippage)
+  const [inputVal, setInputVal] = useState(userSlippageTolerance.toFixed(2))
 
-  const [inputVal, setInputVal] = useState(
-    userSlippageTolerance === 'auto' ? TRIDENT_MIGRATION_DEFAULT_SLIPPAGE.toFixed(2) : userSlippageTolerance.toFixed(2)
-  )
   return (
     <div className="flex items-center md:self-start self-center gap-2">
       <div className="flex items-center">
@@ -35,7 +30,7 @@ export const SlippageWidget = () => {
           onChange={(e) => {
             setInputVal(e.target.value)
             try {
-              setSlippage(new Percent(Math.floor(parseFloat(e.target.value) * 100), 10_000))
+              dispatch(setSlippageInput(e.target.value))
             } catch (e) {} // Ignore false inputs for now (upcoming PR to refactor)
           }}
           onBlur={() => {}}

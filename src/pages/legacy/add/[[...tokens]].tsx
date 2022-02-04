@@ -32,10 +32,12 @@ import TransactionConfirmationModal, { ConfirmationModalContent } from 'app/moda
 import { useActiveWeb3React } from 'app/services/web3'
 import { USER_REJECTED_TX } from 'app/services/web3/WalletError'
 import { useWalletModalToggle } from 'app/state/application/hooks'
+import { useAppSelector } from 'app/state/hooks'
 import { Field } from 'app/state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'app/state/mint/hooks'
+import { selectSlippage } from 'app/state/slippage/slippageSlice'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
-import { useExpertModeManager, useUserSlippageToleranceWithDefault } from 'app/state/user/hooks'
+import { useExpertModeManager } from 'app/state/user/hooks'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
@@ -90,9 +92,7 @@ export default function Add() {
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
 
-  // const [allowedSlippage] = useUserSlippageTolerance(); // custom from users
-
-  const allowedSlippage = useUserSlippageToleranceWithDefault(DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE) // custom from users
+  const allowedSlippage = useAppSelector(selectSlippage)
 
   const [txHash, setTxHash] = useState<string>('')
 
